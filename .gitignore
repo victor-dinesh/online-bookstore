@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# SQLite database files (automatically generated on first run)
+*.db
+*.sqlite3
+
+# Instance folder (Flask)
+instance/
+
+# Environment variables
+.env
+.env.local
+
+# IDE and Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+

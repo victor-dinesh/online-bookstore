@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Book Inventory{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-1">Book Inventory Dashboard</h1>
+            <p class="text-muted mb-0">Manage bookstore catalog, monitor inventory levels, and update book pricing.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('add_book') }}" class="btn btn-primary d-inline-flex align-items-center gap-2 shadow-sm px-3 py-2">
+                <i class="bi bi-plus-lg fs-5"></i>
+                <span class="fw-semibold">Add New Book</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Overview Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-book"></i>
+                </div>
+                <div>
+                    <div class="stat-label">Total Titles</div>
+                    <div class="stat-value text-dark">{{ stats.total_titles }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success-subtle text-success">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div>
+                    <div class="stat-label">Units in Stock</div>
+                    <div class="stat-value text-dark">{{ stats.total_stock_units }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-info-subtle text-info">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div>
+                    <div class="stat-label">Inventory Valuation</div>
+                    <div class="stat-value text-dark">${{ "%.2f"|format(stats.total_inventory_value) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning-subtle text-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <div class="stat-label">Low Stock Alerts</div>
+                    <div class="stat-value text-dark">{{ stats.low_stock_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Table Card -->
+    <div class="content-card">
+        <!-- Card Header with Search Filter -->
+        <div class="card-header-custom d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-journals text-primary fs-5"></i>
+                <h2 class="h5 fw-bold text-dark mb-0">Current Catalog</h2>
+                <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill ms-1">{{ books|length }} items</span>
+            </div>
+            
+            <!-- Live Search Bar -->
+            <div class="col-12 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="liveSearchInput" class="form-control border-start-0 ps-0 bg-light" 
+                           placeholder="Filter by title, author, or ID..." 
+                           value="{{ search_query }}"
+                           aria-label="Filter books">
+                </div>
+            </div>
+        </div>
+
+        {% if books %}
+        <!-- Responsive Books Table -->
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 70px;">ID</th>
+                        <th scope="col">Title & Author</th>
+                        <th scope="col" style="width: 130px;">Price</th>
+                        <th scope="col" style="width: 140px;">Quantity</th>
+                        <th scope="col" style="width: 130px;">Status</th>
+                        <th scope="col" style="width: 130px;">Total Value</th>
+                        <th scope="col" class="text-end" style="width: 150px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="booksTableBody">
+                    {% for book in books %}
+                    <tr class="book-row" 
+                        data-id="{{ book.id }}" 
+                        data-title="{{ book.title|lower }}" 
+                        data-author="{{ book.author|lower }}">
+                        
+                        <!-- Book ID -->
+                        <td class="text-muted fw-semibold">#{{ book.id }}</td>
+                        
+                        <!-- Book Title & Author -->
+                        <td>
+                            <div class="book-title-cell">{{ book.title }}</div>
+                            <div class="book-author-cell">
+                                <i class="bi bi-person me-1"></i>{{ book.author }}
+                            </div>
+                        </td>
+                        
+                        <!-- Price -->
+                        <td>
+                            <span class="price-tag">${{ "%.2f"|format(book.price) }}</span>
+                        </td>
+                        
+                        <!-- Quantity -->
+                        <td>
+                            <span class="fw-semibold">{{ book.quantity }}</span>
+                            <span class="text-muted small">units</span>
+                        </td>
+                        
+                        <!-- Stock Status Badge -->
+                        <td>
+                            {% if book.quantity == 0 %}
+                                <span class="badge badge-stock badge-out-of-stock">
+                                    <i class="bi bi-x-circle me-1"></i>Out of Stock
+                                </span>
+                            {% elif book.quantity < 5 %}
+                                <span class="badge badge-stock badge-low-stock">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Low ({{ book.quantity }})
+                                </span>
+                            {% else %}
+                                <span class="badge badge-stock badge-in-stock">
+                                    <i class="bi bi-check-circle me-1"></i>In Stock
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Total Value -->
+                        <td>
+                            <span class="text-secondary small fw-semibold">
+                                ${{ "%.2f"|format(book.price * book.quantity) }}
+                            </span>
+                        </td>
+
+                        <!-- Actions (Edit & Delete) -->
+                        <td class="text-end">
+                            <div class="action-btn-group d-inline-flex gap-1">
+                                <!-- Edit Button -->
+                                <a href="{{ url_for('edit_book', book_id=book.id) }}" 
+                                   class="btn btn-outline-primary btn-sm" 
+                                   title="Edit Book Information">
+                                    <i class="bi bi-pencil-square"></i>
+                                    <span class="d-none d-lg-inline ms-1">Edit</span>
+                                </a>
+
+                                <!-- Delete Button (Triggers Modal) -->
+                                <button type="button" 
+                                        class="btn btn-outline-danger btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteConfirmModal"
+                                        data-book-id="{{ book.id }}"
+                                        data-book-title="{{ book.title }}"
+                                        data-book-author="{{ book.author }}"
+                                        title="Delete Book from Database">
+                                    <i class="bi bi-trash3"></i>
+                                    <span class="d-none d-lg-inline ms-1">Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                    <!-- Dynamic Row when Search yields 0 matches -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="7" class="text-center py-5">
+                            <i class="bi bi-search text-muted fs-1 d-block mb-2"></i>
+                            <h5 class="text-muted fw-semibold">No matching books found</h5>
+                            <p class="text-muted small">Try adjusting your search criteria.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <!-- Empty State when catalog is completely empty -->
+        <div class="text-center py-5 px-3">
+            <div class="stat-icon bg-light text-muted mx-auto mb-3" style="width: 64px; height: 64px; font-size: 2rem;">
+                <i class="bi bi-book"></i>
+            </div>
+            <h4 class="fw-bold text-dark">No Books Found in Catalog</h4>
+            <p class="text-muted mb-4">Your bookstore inventory is currently empty. Start by adding your first title.</p>
+            <a href="{{ url_for('add_book') }}" class="btn btn-primary px-4 py-2">
+                <i class="bi bi-plus-circle me-1"></i> Add First Book
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Reusable Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger-subtle text-danger border-0">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="deleteConfirmModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-dark mb-3">
+                    Are you sure you want to permanently remove this book from the database?
+                </p>
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <i class="bi bi-book-fill text-danger fs-4 mt-1"></i>
+                        <div>
+                            <div class="fw-bold text-dark fs-6" id="modalBookTitle">Book Title</div>
+                            <div class="text-muted small" id="modalBookAuthor">by Author</div>
+                            <div class="text-secondary small mt-1">Book ID: <span class="fw-semibold" id="modalBookId">#0</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning py-2 px-3 small d-flex align-items-center gap-2 mb-0">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>This action cannot be undone.</span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light p-3">
+                <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" action="" class="m-0">
+                    <button type="submit" class="btn btn-danger px-4 d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-trash3-fill"></i> Delete Book
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

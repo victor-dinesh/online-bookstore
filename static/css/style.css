@@ -1,0 +1,228 @@
+/* -------------------------------------------------------------
+   Online Bookstore - Custom Stylesheet
+   Modern, Clean, Responsive Design
+   ------------------------------------------------------------- */
+
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #475569;
+    --bg-light: #f8fafc;
+    --card-border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar Customization */
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 1.35rem;
+}
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Page Header & Breadcrumbs */
+.page-header {
+    background: white;
+    border-bottom: 1px solid var(--card-border);
+    padding: 1.75rem 0;
+    margin-bottom: 2rem;
+}
+
+/* Dashboard Statistics Cards */
+.stat-card {
+    background: white;
+    border: 1px solid var(--card-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+/* Main Content Card */
+.content-card {
+    background: white;
+    border: 1px solid var(--card-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+}
+
+.card-header-custom {
+    background: white;
+    border-bottom: 1px solid var(--card-border);
+    padding: 1.25rem 1.5rem;
+}
+
+/* Custom Table Styles */
+.table-custom {
+    margin-bottom: 0;
+}
+
+.table-custom th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.9rem 1rem;
+    border-top: none;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.table-custom td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--card-border);
+    color: #1e293b;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.book-title-cell {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.book-author-cell {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.price-tag {
+    font-weight: 700;
+    color: #047857;
+    font-size: 1rem;
+}
+
+/* Badges for Inventory Status */
+.badge-stock {
+    font-weight: 600;
+    padding: 0.4em 0.75em;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.badge-in-stock {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.badge-low-stock {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-out-of-stock {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Form Styling */
+.form-card {
+    background: white;
+    border: 1px solid var(--card-border);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.15);
+}
+
+/* Action Buttons */
+.action-btn-group .btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.85rem;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 0.6rem;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Footer Styling */
+footer {
+    margin-top: auto;
+    background: white;
+    border-top: 1px solid var(--card-border);
+    padding: 1.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .form-card {
+        padding: 1.25rem;
+    }
+
+    .table-responsive {
+        border: 0;
+    }
+}
+
